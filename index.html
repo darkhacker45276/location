@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head><title>Location Capture Link</title></head>
+<body>
+  <h2>Location Capture Link</h2>
+  <p id="status">Location request pending...</p>
+
+  <script>
+    function sendLocation(lat, lon) {
+      // Yahan backend URL daalo jahan location bhejni hai
+      fetch('https://your-backend-server.com/location', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({latitude: lat, longitude: lon})
+      })
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById('status').innerText = 'Location sent successfully!';
+      })
+      .catch(error => {
+        document.getElementById('status').innerText = 'Error sending location.';
+      });
+    }
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          document.getElementById('status').innerText = `Location captured: ${lat}, ${lon}`;
+          sendLocation(lat, lon);
+        },
+        error => {
+          document.getElementById('status').innerText = 'Location access denied or unavailable.';
+        }
+      );
+    } else {
+      document.getElementById('status').innerText = 'Geolocation not supported by browser.';
+    }
+  </script>
+</body>
+</html>
